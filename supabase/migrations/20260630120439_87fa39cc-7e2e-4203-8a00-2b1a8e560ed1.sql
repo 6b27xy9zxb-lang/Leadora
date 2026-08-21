@@ -1,0 +1,1 @@
+UPDATE public.profiles SET script_credits = GREATEST(script_credits, 25);
