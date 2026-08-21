@@ -11,7 +11,10 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in — Leadora" },
-      { name: "description", content: "Sign in or create your Leadora account." },
+      {
+        name: "description",
+        content: "Sign in or create your Leadora account.",
+      },
     ],
   }),
   component: AuthPage,
@@ -19,6 +22,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,29 +30,49 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard" });
+      if (data.session) {
+        navigate({ to: "/dashboard", replace: true });
+      }
     });
   }, [navigate]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          },
         });
+
         if (error) throw error;
-        toast.success("Account created! Check your email if confirmation is required.");
+
+        toast.success(
+          "Account created! Check your email if confirmation is required."
+        );
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+
         if (error) throw error;
+
+        navigate({
+          to: "/dashboard",
+          replace: true,
+        });
       }
-      navigate({ to: "/dashboard" });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Auth failed");
+      toast.error(
+        err instanceof Error ? err.message : "Auth failed"
+      );
     } finally {
       setLoading(false);
     }
@@ -56,61 +80,158 @@ function AuthPage() {
 
   async function onGoogle() {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/dashboard` },
-    });
-    if (error) {
-      toast.error(error.message || "Google sign-in failed");
+
+    try {
+      const redirectTo =
+        `${window.location.origin}/auth/callback`;
+
+      const { error } =
+        await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo,
+          },
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      // Supabase redirects the browser to Google.
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Google sign-in failed"
+      );
+
       setLoading(false);
-      return;
     }
-    // Supabase redirects the browser to Google, so no further action needed here.
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--ls-surface)" }}>
+    <main
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: "var(--ls-surface)" }}
+    >
       <div className="w-full max-w-md glass-card rounded-2xl p-8">
-        <Link to="/" className="flex items-center gap-2 mb-8 text-ls-text">
+        <Link
+          to="/"
+          className="flex items-center gap-2 mb-8 text-ls-text"
+        >
           <Radar className="h-6 w-6 text-primary" />
-          <span className="text-xl font-medium uppercase tracking-wider">Leadora</span>
+
+          <span className="text-xl font-medium uppercase tracking-wider">
+            Leadora
+          </span>
         </Link>
+
         <h1 className="text-2xl font-semibold text-ls-text mb-1">
-          {mode === "login" ? "Welcome back" : "Create your account"}
+          {mode === "login"
+            ? "Welcome back"
+            : "Create your account"}
         </h1>
+
         <p className="text-sm text-ls-text-muted mb-6">
-          {mode === "login" ? "Sign in to keep finding leads." : "Start with 20 free search credits."}
+          {mode === "login"
+            ? "Sign in to keep finding leads."
+            : "Start with 20 free search credits."}
         </p>
 
-        <Button type="button" variant="outline" className="w-full mb-4" onClick={onGoogle} disabled={loading}>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full mb-4"
+          onClick={onGoogle}
+          disabled={loading}
+        >
+          {loading && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          )}
+
           Continue with Google
         </Button>
 
         <div className="flex items-center gap-3 my-4 text-xs uppercase tracking-widest text-ls-text/40">
-          <span className="h-px flex-1 bg-ls-surface-elevated" /> or <span className="h-px flex-1 bg-ls-surface-elevated" />
+          <span className="h-px flex-1 bg-ls-surface-elevated" />
+          or
+          <span className="h-px flex-1 bg-ls-surface-elevated" />
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form
+          onSubmit={onSubmit}
+          className="space-y-4"
+        >
           <div>
-            <Label htmlFor="email" className="text-ls-text/80">Email</Label>
-            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1" />
+            <Label
+              htmlFor="email"
+              className="text-ls-text/80"
+            >
+              Email
+            </Label>
+
+            <Input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
+              className="mt-1"
+            />
           </div>
+
           <div>
-            <Label htmlFor="password" className="text-ls-text/80">Password</Label>
-            <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1" />
+            <Label
+              htmlFor="password"
+              className="text-ls-text/80"
+            >
+              Password
+            </Label>
+
+            <Input
+              id="password"
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+              className="mt-1"
+            />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {mode === "login" ? "Sign in" : "Create account"}
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loading}
+          >
+            {loading && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+
+            {mode === "login"
+              ? "Sign in"
+              : "Create account"}
           </Button>
         </form>
 
         <button
           type="button"
-          onClick={() => setMode(mode === "login" ? "signup" : "login")}
+          onClick={() =>
+            setMode(
+              mode === "login"
+                ? "signup"
+                : "login"
+            )
+          }
           className="mt-6 w-full text-sm text-ls-text-muted hover:text-ls-text"
         >
-          {mode === "login" ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+          {mode === "login"
+            ? "Don't have an account? Sign up"
+            : "Already have an account? Sign in"}
         </button>
       </div>
     </main>

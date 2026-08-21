@@ -21,6 +21,7 @@ import { Route as AuthenticatedLeadsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as PreviewTokenRouteImport } from './routes/preview.$token'
 import { Route as AuthenticatedCheckoutPlanRouteImport } from './routes/_authenticated/checkout.$plan'
 
@@ -83,6 +84,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRoute,
+} as any)
 const PreviewTokenRoute = PreviewTokenRouteImport.update({
   id: '/preview/$token',
   path: '/preview/$token',
@@ -97,7 +103,7 @@ const AuthenticatedCheckoutPlanRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/contact': typeof ContactRoute
   '/hosting': typeof HostingRoute
   '/sell': typeof SellRoute
@@ -107,12 +113,13 @@ export interface FileRoutesByFullPath {
   '/messages': typeof AuthenticatedMessagesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/preview/$token': typeof PreviewTokenRoute
   '/checkout/$plan': typeof AuthenticatedCheckoutPlanRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/contact': typeof ContactRoute
   '/hosting': typeof HostingRoute
   '/sell': typeof SellRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/messages': typeof AuthenticatedMessagesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/preview/$token': typeof PreviewTokenRoute
   '/checkout/$plan': typeof AuthenticatedCheckoutPlanRoute
 }
@@ -129,7 +137,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/contact': typeof ContactRoute
   '/hosting': typeof HostingRoute
   '/sell': typeof SellRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/_authenticated/messages': typeof AuthenticatedMessagesRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/preview/$token': typeof PreviewTokenRoute
   '/_authenticated/checkout/$plan': typeof AuthenticatedCheckoutPlanRoute
 }
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/projects'
     | '/settings'
+    | '/auth/callback'
     | '/preview/$token'
     | '/checkout/$plan'
   fileRoutesByTo: FileRoutesByTo
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/projects'
     | '/settings'
+    | '/auth/callback'
     | '/preview/$token'
     | '/checkout/$plan'
   id:
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/_authenticated/messages'
     | '/_authenticated/projects'
     | '/_authenticated/settings'
+    | '/auth/callback'
     | '/preview/$token'
     | '/_authenticated/checkout/$plan'
   fileRoutesById: FileRoutesById
@@ -194,7 +206,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   ContactRoute: typeof ContactRoute
   HostingRoute: typeof HostingRoute
   SellRoute: typeof SellRoute
@@ -287,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/preview/$token': {
       id: '/preview/$token'
       path: '/preview/$token'
@@ -327,10 +346,20 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AuthRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   ContactRoute: ContactRoute,
   HostingRoute: HostingRoute,
   SellRoute: SellRoute,
