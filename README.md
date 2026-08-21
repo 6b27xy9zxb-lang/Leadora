@@ -1,16 +1,18 @@
 <div align="center">
 
 # 🚀 Leadora
-### AI-Powered B2B Lead Generation & Sales Automation Platform
+### Find Businesses. Build Websites. Win More Clients.
 
-**Find clients. Spot opportunity. Close deals — all in one platform.**
+**The complete platform to find leads, generate AI scripts, host site previews, and close deals.**
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=for-the-badge)](https://leadora-mu.vercel.app/)
 [![Built with React](https://img.shields.io/badge/React-Vite-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
 [![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
-[**🔗 Live Demo**](https://leadora-mu.vercel.app/) · [Features](#-features) · [How It Works](#-how-it-works) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started)
+[**🔗 Live Demo**](https://leadora-mu.vercel.app/) · [Features](#-features) · [How It Works](#-how-it-works) · [Pricing](#-pricing) · [Team](#-team)
+
+![Leadora Screenshot](./assets/leadora-hero-screenshot.png)
 
 </div>
 
@@ -18,9 +20,19 @@
 
 ## 📖 Overview
 
-**Leadora** helps freelancers, agencies, and web developers discover potential business clients, identify businesses without websites, generate personalized outreach scripts, and create AI-powered website prompts — turning cold prospecting into a streamlined, repeatable pipeline.
+**Leadora** helps agencies, freelancers, and developers discover businesses without websites, generate AI-powered outreach, build stunning site previews, and convert prospects into long-term clients — all backed by fresh **OpenStreetMap-verified** data.
 
-Instead of manually hunting for leads and writing pitches from scratch, Leadora automates the entire top-of-funnel process — from **discovery** to **outreach** to **conversion**.
+> Stop guessing. Start closing.
+
+---
+
+## 🆚 Why Leadora?
+
+| | Manual Prospecting | Generic Lead Lists | **Leadora** |
+|---|---|---|---|
+| Data | Hours of Google searching | Outdated contact data | ✅ Fresh OpenStreetMap data |
+| Targeting | No way to verify gaps | Unverified business details | ✅ Verified missing-website status |
+| Outreach | Cold, no context | Sold to everyone | ✅ AI script + prompt generated automatically |
 
 ---
 
@@ -28,69 +40,68 @@ Instead of manually hunting for leads and writing pitches from scratch, Leadora 
 
 ### 🔎 AI-Powered Lead Discovery
 - Search businesses by **city** and **category**
-- Surface relevant local businesses via the **Google Places API**
-- Filter leads by **rating** and review volume
-- Automatically **prioritize businesses without websites** — your highest-value prospects
+- Detects **missing websites** automatically and surfaces ready-to-pitch prospects
+- Verified business details from OpenStreetMap
+- Filter by rating and review volume
 
-### 📊 Lead Management
-- Save leads to your personal workspace
-- Store business info: ratings, reviews, phone numbers, addresses
-- Add and manage **custom tags** for organization
-- **Bulk delete** or manage saved leads efficiently
+### 📞 AI Cold-Call Scripts & Website Prompts
+- One-click, business-specific **cold-call scripts** with objection handling
+- Tailored **AI website builder prompts** — design direction, palette, hero copy, CTAs
+- Personalized to each lead's industry and gaps
 
-### 📞 AI Cold Call Scripts
-- Generate **personalized, business-specific** cold-call scripts
-- Tailored opening lines and value propositions
-- Built-in **objection handling**
-- Natural, non-pushy **soft-close strategies**
+### 🌐 Site Previews & Hosting
+- Spin up **branded preview sites** in minutes
+- Trackable links your prospect can open from their phone
+- Custom domain & SSL (Pro/Max plans)
+- **Sell finished websites** directly to clients through Leadora
 
-### 🤖 AI Website Builder Prompts
-- Generate detailed, ready-to-use prompts for AI website builders
-- Industry-specific design recommendations
-- Color palette and branding suggestions
-- Structured hero sections, service blocks, CTAs, and brand personality
+### 📊 Track & Close
+- See **views, clicks, and timeline activity** per prospect
+- Move leads through a **CRM-style kanban** from lead → closed
+- Total views, unique visitors, and CTA click tracking built in
 
-### 🔐 Authentication & Security
-- Email/password authentication
-- Google OAuth login
-- Secure, production-grade auth via **Supabase**
-
-### 🗺️ Rich Business Data
-Every lead includes:
-
-| Field | Description |
-|---|---|
-| Business Name | Legal/trade name |
-| Category | Industry classification |
-| Location & Address | Full geographic data |
-| Coordinates | Lat/long for mapping |
-| Phone Number | Direct contact |
-| Rating & Reviews | Social proof metrics |
-| Website Status | Has a site or not (key targeting signal) |
+### 💰 Revenue Calculator
+- Model your monthly and annual income based on sites sold, upfront pricing, and recurring maintenance fees
+- Built-in "Freedom Number" projection for agencies and freelancers
 
 ---
 
 ## 🔄 How It Works
 
-```
-   🔍 Search
-      ↓
-   🏢 Discover Local Businesses
-      ↓
-   🎯 Identify Businesses Without Websites
-      ↓
-   💾 Save Leads
-      ↓
-   📞 Generate AI Outreach Script
-      ↓
-   🌐 Generate AI Website Prompt
-      ↓
-   🛠️  Build & Pitch Website
-      ↓
-   ✅ Convert Lead Into Client
-```
+**01 · Find Leads** — Search any city + business type. Leadora detects missing websites and surfaces ready-to-pitch prospects.
 
-Every stage is designed to remove friction — so you spend less time prospecting and more time closing.
+**02 · AI Scripts** — Generate cold-call scripts and AI builder prompts tailored to each business in one click.
+
+**03 · Build Previews** — Spin up branded site previews with a trackable link the prospect can open from their phone.
+
+**04 · Track & Close** — See views, clicks, and timeline activity. Move leads through your CRM kanban to closed.
+
+**05 · Scale** — Plan tiers unlock more credits, hosting, and analytics so your agency keeps compounding.
+
+---
+
+## 👥 Built For
+
+| Who | What Leadora Does For You |
+|---|---|
+| **Freelancers** | Find local businesses to add to your client roster — spend less time prospecting, more time designing |
+| **Agencies** | Get qualified, website-less leads every week — never run out of prospects for your sales team |
+| **No-Code Builders** | Pair Leadora's AI prompts with any no-code builder to ship demo pages before the call ends |
+| **Students & First Clients** | Skip cold-outreach guesswork — start with verified businesses who already need a website |
+
+---
+
+## 💳 Pricing
+
+| Plan | Price | Search Credits | AI Scripts / Prompts | Hosting & Extras |
+|---|---|---|---|---|
+| **Free** | $0/mo | 20/mo | 5/mo | Basic CRM |
+| **Pro** ⭐ Most Popular | $25/mo | 200/mo | 50/mo | Hosting + analytics |
+| **Max** | $50/mo | 500/mo | 100/mo | Priority support |
+
+Quarterly and annual billing available with **15%** and **25%** savings respectively. All plans include OpenStreetMap-verified data, secure checkout, and the ability to switch or cancel anytime.
+
+[**View full plan comparison →**](https://leadora-mu.vercel.app/#pricing)
 
 ---
 
@@ -102,7 +113,7 @@ Every stage is designed to remove friction — so you spend less time prospectin
 | Styling | Tailwind CSS, shadcn/ui |
 | Backend / Auth / DB | Supabase |
 | AI Engine | Groq API |
-| Maps & Business Data | Google Places API |
+| Business Data | OpenStreetMap / Overpass API |
 | Deployment | Vercel |
 | Version Control | GitHub |
 
@@ -111,43 +122,47 @@ Every stage is designed to remove friction — so you spend less time prospectin
 ## 🚦 Getting Started
 
 ```bash
-# Clone the repository
 git clone https://github.com/<your-username>/leadora.git
 cd leadora
-
-# Install dependencies
 npm install
-
-# Set up environment variables
 cp .env.example .env
-# Add your Supabase URL/Key, Groq API key, and Google Places API key
-
-# Run locally
 npm run dev
 ```
 
 ---
 
+## 👥 Team
+
+| Name | Role |
+|---|---|
+| **Himanshu Pal** | CEO & Owner |
+| **Mahi Talwani** | Brand President |
+| **Piyush S. Meharwade** | Co-Founder |
+
+---
+
 ## 🗺️ Roadmap
 
-- [ ] CSV/bulk export for leads
 - [ ] Email outreach sequencing
-- [ ] CRM-style pipeline view (Kanban)
+- [ ] Deeper CRM automation
 - [ ] Team/workspace collaboration
 - [ ] Multi-language script generation
+- [ ] Native mobile app
 
 ---
 
 ## 📄 License
 
-This project is open for personal and educational use. Contact the author for commercial licensing.
+This project is open for personal and educational use. Contact the team for commercial licensing.
 
 ---
 
 <div align="center">
 
-**Built with ❤️ to help freelancers and agencies land more clients.**
+**Ready to find your next client?**
 
-[🔗 Try Leadora Live](https://leadora-mu.vercel.app/)
+[🔗 Try Leadora Free](https://leadora-mu.vercel.app/auth)
+
+Leadora © 2026
 
 </div>
