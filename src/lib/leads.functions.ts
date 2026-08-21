@@ -29,20 +29,25 @@ export const searchLeads = createServerFn({ method: "POST" })
     // Demo mode: unlimited searches
     const remaining = 999;
 
-    // IMPORTANT:
-    // Use GOOGLE_PLACES_API_KEY because that is the key expected
-    // by the frontend/project configuration.
-    const mapsKey =
-      process.env.GOOGLE_PLACES_API_KEY ||
-      process.env.GOOGLE_MAPS_API_KEY;
+    // Use only the server-side Google Maps API key.
+    const mapsKey = process.env.GOOGLE_MAPS_API_KEY;
+
+    // Log only a safe portion of the key for debugging.
+    // The full API key is NEVER logged.
+    console.log(
+      "[searchLeads] Google key loaded:",
+      mapsKey
+        ? `${mapsKey.slice(0, 6)}...${mapsKey.slice(-4)}`
+        : "MISSING"
+    );
 
     if (!mapsKey) {
       console.error(
-        "[searchLeads] Missing GOOGLE_PLACES_API_KEY / GOOGLE_MAPS_API_KEY"
+        "[searchLeads] Missing GOOGLE_MAPS_API_KEY"
       );
 
       throw new Error(
-        "Google Places API key is not configured. Add GOOGLE_PLACES_API_KEY to your server environment variables."
+        "Google Maps API key is not configured."
       );
     }
 
@@ -53,12 +58,14 @@ export const searchLeads = createServerFn({ method: "POST" })
         "https://places.googleapis.com/v1/places:searchText",
         {
           method: "POST",
+
           headers: {
             "Content-Type": "application/json",
             "X-Goog-Api-Key": mapsKey,
             "X-Goog-FieldMask":
               "places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.internationalPhoneNumber,places.rating,places.userRatingCount,places.websiteUri,places.location",
           },
+
           body: JSON.stringify({
             textQuery: query,
             pageSize: 20,
@@ -78,14 +85,18 @@ export const searchLeads = createServerFn({ method: "POST" })
 
         try {
           const errorJson = JSON.parse(responseText);
-          googleMessage = errorJson?.error?.message || "";
+
+          googleMessage =
+            errorJson?.error?.message || "";
         } catch {
           googleMessage = responseText;
         }
 
         throw new Error(
           `Google Places API error (${response.status})${
-            googleMessage ? `: ${googleMessage}` : ""
+            googleMessage
+              ? `: ${googleMessage}`
+              : ""
           }`
         );
       }
@@ -95,12 +106,19 @@ export const searchLeads = createServerFn({ method: "POST" })
           displayName?: {
             text?: string;
           };
+
           formattedAddress?: string;
+
           nationalPhoneNumber?: string;
+
           internationalPhoneNumber?: string;
+
           rating?: number;
+
           userRatingCount?: number;
+
           websiteUri?: string;
+
           location?: {
             latitude?: number;
             longitude?: number;
@@ -111,17 +129,27 @@ export const searchLeads = createServerFn({ method: "POST" })
       try {
         json = JSON.parse(responseText);
       } catch (error) {
-        console.error("[searchLeads] Invalid Google response:", error);
-        throw new Error("Invalid response received from Google Places.");
+        console.error(
+          "[searchLeads] Invalid Google response:",
+          error
+        );
+
+        throw new Error(
+          "Invalid response received from Google Places."
+        );
       }
 
-      const results: PlaceResult[] = (json.places ?? [])
+      const results: PlaceResult[] = (
+        json.places ?? []
+      )
         .filter(
-          (place) => (place.rating ?? 0) >= data.minRating
+          (place) =>
+            (place.rating ?? 0) >= data.minRating
         )
         .map((place) => ({
           business_name:
-            place.displayName?.text ?? "Unknown Business",
+            place.displayName?.text ??
+            "Unknown Business",
 
           category: data.category,
 
@@ -132,25 +160,33 @@ export const searchLeads = createServerFn({ method: "POST" })
             place.internationalPhoneNumber ??
             "",
 
-          address: place.formattedAddress ?? "",
+          address:
+            place.formattedAddress ?? "",
 
           rating: place.rating ?? 0,
 
-          review_count: place.userRatingCount ?? 0,
+          review_count:
+            place.userRatingCount ?? 0,
 
-          has_website: Boolean(place.websiteUri),
+          has_website:
+            Boolean(place.websiteUri),
 
           osm_updated_at: null,
 
-          lat: place.location?.latitude ?? null,
+          lat:
+            place.location?.latitude ?? null,
 
-          lng: place.location?.longitude ?? null,
+          lng:
+            place.location?.longitude ?? null,
         }));
 
       // Put businesses WITHOUT websites first,
-      // because those are your best website-development leads.
+      // because those are the best website-development leads.
       results.sort((a, b) => {
-        if (a.has_website !== b.has_website) {
+        if (
+          a.has_website !==
+          b.has_website
+        ) {
           return a.has_website ? 1 : -1;
         }
 
@@ -167,7 +203,10 @@ export const searchLeads = createServerFn({ method: "POST" })
         remainingCredits: remaining,
       };
     } catch (error) {
-      console.error("[searchLeads] Search failed:", error);
+      console.error(
+        "[searchLeads] Search failed:",
+        error
+      );
 
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -196,22 +235,33 @@ const SaveLeadInput = z.object({
   osm_updated_at: z.string().nullable().optional(),
 });
 
-export const saveLead = createServerFn({ method: "POST" })
+export const saveLead = createServerFn({
+  method: "POST",
+})
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => SaveLeadInput.parse(d))
+  .inputValidator((d: unknown) =>
+    SaveLeadInput.parse(d)
+  )
   .handler(async ({ data, context }) => {
-    const { error, data: row } = await context.supabase
-      .from("leads")
-      .insert({
-        ...data,
-        user_id: context.userId,
-      })
-      .select()
-      .single();
+    const { error, data: row } =
+      await context.supabase
+        .from("leads")
+        .insert({
+          ...data,
+          user_id: context.userId,
+        })
+        .select()
+        .single();
 
     if (error) {
-      console.error("[saveLead]", error);
-      throw new Error("Failed to save lead. Please try again.");
+      console.error(
+        "[saveLead]",
+        error
+      );
+
+      throw new Error(
+        "Failed to save lead. Please try again."
+      );
     }
 
     return row;
@@ -222,20 +272,32 @@ export const saveLead = createServerFn({ method: "POST" })
 // LIST SAVED LEADS
 // ============================================================
 
-export const listLeads = createServerFn({ method: "GET" })
+export const listLeads = createServerFn({
+  method: "GET",
+})
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
-      .from("leads")
-      .select("*")
-      .eq("user_id", context.userId)
-      .order("saved_at", {
-        ascending: false,
-      });
+    const { data, error } =
+      await context.supabase
+        .from("leads")
+        .select("*")
+        .eq(
+          "user_id",
+          context.userId
+        )
+        .order("saved_at", {
+          ascending: false,
+        });
 
     if (error) {
-      console.error("[listLeads]", error);
-      throw new Error("Failed to load leads.");
+      console.error(
+        "[listLeads]",
+        error
+      );
+
+      throw new Error(
+        "Failed to load leads."
+      );
     }
 
     return data ?? [];
@@ -248,26 +310,45 @@ export const listLeads = createServerFn({ method: "GET" })
 
 const UpdateTagsInput = z.object({
   id: z.string().uuid(),
+
   tags: z
-    .array(z.string().min(1).max(40))
+    .array(
+      z.string()
+        .min(1)
+        .max(40)
+    )
     .max(20),
 });
 
-export const updateLeadTags = createServerFn({ method: "POST" })
+export const updateLeadTags = createServerFn({
+  method: "POST",
+})
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => UpdateTagsInput.parse(d))
+  .inputValidator((d: unknown) =>
+    UpdateTagsInput.parse(d)
+  )
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("leads")
-      .update({
-        tags: data.tags,
-      })
-      .eq("id", data.id)
-      .eq("user_id", context.userId);
+    const { error } =
+      await context.supabase
+        .from("leads")
+        .update({
+          tags: data.tags,
+        })
+        .eq("id", data.id)
+        .eq(
+          "user_id",
+          context.userId
+        );
 
     if (error) {
-      console.error("[updateLeadTags]", error);
-      throw new Error("Failed to update tags.");
+      console.error(
+        "[updateLeadTags]",
+        error
+      );
+
+      throw new Error(
+        "Failed to update tags."
+      );
     }
 
     return {
@@ -287,21 +368,35 @@ const BulkDeleteInput = z.object({
     .max(500),
 });
 
-export const bulkDeleteLeads = createServerFn({ method: "POST" })
+export const bulkDeleteLeads = createServerFn({
+  method: "POST",
+})
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => BulkDeleteInput.parse(d))
+  .inputValidator((d: unknown) =>
+    BulkDeleteInput.parse(d)
+  )
   .handler(async ({ data, context }) => {
-    const { error, count } = await context.supabase
-      .from("leads")
-      .delete({
-        count: "exact",
-      })
-      .in("id", data.ids)
-      .eq("user_id", context.userId);
+    const { error, count } =
+      await context.supabase
+        .from("leads")
+        .delete({
+          count: "exact",
+        })
+        .in("id", data.ids)
+        .eq(
+          "user_id",
+          context.userId
+        );
 
     if (error) {
-      console.error("[bulkDeleteLeads]", error);
-      throw new Error("Failed to delete leads.");
+      console.error(
+        "[bulkDeleteLeads]",
+        error
+      );
+
+      throw new Error(
+        "Failed to delete leads."
+      );
     }
 
     return {
